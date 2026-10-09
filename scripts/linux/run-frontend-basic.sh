@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Start the Node CLI (basic) example (Linux).
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"
+exec "$HERE/../lib/run-frontend.sh" "@apixa/example-basic" "Node CLI (basic)" "stdout" "start"

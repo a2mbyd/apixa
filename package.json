@@ -8,10 +8,22 @@
   "scripts": {
     "build": "pnpm --filter @apixa/core build",
     "dev": "pnpm --filter @apixa/core dev",
-    "typecheck": "pnpm --filter @apixa/core typecheck",
-    "example": "pnpm --filter @apixa/example-basic start"
+    "typecheck": "pnpm --filter @apixa/core typecheck && tsc --noEmit -p tests/tsconfig.json",
+    "test": "vitest run",
+    "example": "pnpm --filter @apixa/example-basic start",
+    "example:next": "pnpm --filter @apixa/core build && pnpm --filter @apixa/example-next dev",
+    "example:react": "pnpm --filter @apixa/core build && pnpm --filter @apixa/example-react-vite dev",
+    "example:vue": "pnpm --filter @apixa/core build && pnpm --filter @apixa/example-vue dev",
+    "example:vanilla": "pnpm --filter @apixa/core build && pnpm --filter @apixa/example-vanilla dev",
+    "example:angular": "pnpm --filter @apixa/core build && pnpm --filter @apixa/example-angular dev",
+    "example:react-native": "pnpm --filter @apixa/core build && pnpm --filter @apixa/example-react-native dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=18"
   }
 }
+

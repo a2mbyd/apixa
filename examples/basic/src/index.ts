@@ -1,11 +1,4 @@
-import {
-  createApi,
-  createMock,
-  get,
-  post,
-  loggingMiddleware,
-  isApiError,
-} from "@apixa/core";
+import { defineApi, isApiError } from "@apixa/core";
 
 type User = {
   id: string;
@@ -13,54 +6,37 @@ type User = {
   email: string;
 };
 
-const api = createApi({
-  baseURL: "https://api.example.com",
-  middleware: [loggingMiddleware],
-  mocks: [
-    createMock({
-      method: "GET",
-      path: "/users",
-      data: [
-        { id: "1", name: "Ada Lovelace", email: "ada@example.com" },
-        { id: "2", name: "Grace Hopper", email: "grace@example.com" },
-      ] satisfies User[],
-    }),
-    createMock({
-      method: "GET",
-      path: "/users/:id",
-      data: { id: "1", name: "Ada Lovelace", email: "ada@example.com" } satisfies User,
-    }),
-    createMock({
-      method: "POST",
-      path: "/users",
-      status: 201,
-      data: { id: "3", name: "Alan Turing", email: "alan@example.com" } satisfies User,
-    }),
-  ],
-});
-
-const users = api.resource("users", {
-  endpoints: {
-    list: get<User[]>("/users"),
-    get: get<User>("/users/:id"),
-    create: post<User>("/users"),
+/**
+ * Implemented `defineApi` client.
+ * Start the local FastAPI app first (`./scripts/macos/run-backend.sh`) so requests hit real HTTP.
+ */
+const api = defineApi({
+  baseURL: "http://127.0.0.1:8787",
+  headers: { Accept: "application/json" },
+  users: {
+    path: "/users",
+    operations: {
+      getAll: { method: "GET", response: {} as User[] },
+      getByID: { method: "GET", path: "/:id", response: {} as User },
+      create: { method: "POST", body: {} as Omit<User, "id">, response: {} as User },
+      update: { method: "PUT", path: "/:id", body: {} as Partial<User>, response: {} as User },
+      delete: { method: "DELETE", path: "/:id", response: undefined as void },
+    },
   },
 });
 
 async function main() {
-  const list = await users.list();
-  console.log("users.list →", list.data);
+  const users = await api.users.getAll();
+  console.log("users.getAll →", users);
 
-  const user = await users.get({ params: { id: "1" } });
-  console.log("users.get →", user.data);
+  const user = await api.users.getByID("1");
+  console.log("users.getByID →", user);
 
-  const created = await users.create({
-    body: {
-      name: "Alan Turing",
-      email: "alan@example.com",
-    },
+  const created = await api.users.create({
+    name: "Alan Turing",
+    email: "alan@example.com",
   });
-  console.log("users.create →", created.data);
+  console.log("users.create →", created);
 }
 
 main().catch((error) => {
