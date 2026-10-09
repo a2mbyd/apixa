@@ -1,45 +1,46 @@
-import { createEndpointCaller } from "./client.js";
+import { createOperationFn, resolveOperation } from "./endpoint.js";
 import { createFetchTransport } from "./transport/fetch.js";
 import type {
-  ApiConfig,
-  EndpointDefinition,
-  ResourceClient,
-  ResourceEndpoints,
+  ApiClient,
+  ApiRootConfig,
+  ResourceDefinition,
+  ResolvedApiConfig,
+  ValidateApiConfig,
 } from "./types.js";
 
-export interface Api {
-  readonly config: Readonly<ApiConfig>;
-  resource: <TEndpoints extends ResourceEndpoints>(
-    name: string,
-    definition: { endpoints: TEndpoints }
-  ) => ResourceClient<TEndpoints>;
+const RESERVED_KEYS = new Set(["baseURL", "headers", "transport", "timeout"]);
+
+function createResourceClient(api: ResolvedApiConfig, resource: ResourceDefinition) {
+  const client: Record<string, (...args: unknown[]) => Promise<unknown>> = {};
+
+  for (const [name, definition] of Object.entries(resource.operations)) {
+    const operation = resolveOperation(name, resource.path, definition);
+    client[name] = createOperationFn(api, operation);
+  }
+
+  return client;
 }
 
-export function createApi(config: ApiConfig): Api {
-  const resolved: ApiConfig = {
-    ...config,
+export function defineApi<const T extends ValidateApiConfig<T> & ApiRootConfig>(
+  config: T,
+): ApiClient<T> {
+  const resolved: ResolvedApiConfig = {
+    baseURL: config.baseURL,
+    headers: config.headers,
     transport: config.transport ?? createFetchTransport(),
-    middleware: config.middleware ?? [],
-    mocks: config.mocks ?? [],
+    timeout: config.timeout,
   };
 
-  return {
-    config: resolved,
+  const client = {} as ApiClient<T>;
 
-    resource<TEndpoints extends ResourceEndpoints>(
-      _name: string,
-      definition: { endpoints: TEndpoints }
-    ): ResourceClient<TEndpoints> {
-      const client = {} as ResourceClient<TEndpoints>;
+  for (const [key, value] of Object.entries(config)) {
+    if (RESERVED_KEYS.has(key)) continue;
 
-      for (const [key, endpoint] of Object.entries(definition.endpoints)) {
-        (client as Record<string, unknown>)[key] = createEndpointCaller(
-          resolved,
-          endpoint as EndpointDefinition
-        );
-      }
+    (client as Record<string, unknown>)[key] = createResourceClient(
+      resolved,
+      value as ResourceDefinition,
+    );
+  }
 
-      return client;
-    },
-  };
+  return client;
 }

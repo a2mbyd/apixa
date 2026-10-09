@@ -2,6 +2,20 @@
 
 Project log. Newest entry first.
 
+## 2026-10-10 — Land v0.1.0 Core and frontend playgrounds
+
+Merged `@apixa/core` `defineApi`, the Vitest suite (fake Transport), Next-first multi-framework examples, and macOS/Linux/Windows frontend run scripts onto main. `/plan-change` now requires a Tests section for functional changes so the suite keeps growing. v0.1.0 acceptance criteria are complete.
+
+## 2026-10-09 — Frontend examples (Next-first)
+
+Added framework playgrounds under `examples/` that consume `@apixa/core` against the FastAPI backend: **Next.js** (primary — RSC + client mutations), React+Vite, Vue, vanilla DOM, Angular, and React Native (Expo), plus the existing Node `basic` CLI. Platform scripts under `scripts/{macos,linux,win}/run-frontend-*.{sh,bat}` (shared helper in `scripts/lib/`). Root scripts: `pnpm example:next` (and `:react`, `:vue`, `:vanilla`, `:angular`, `:react-native`).
+
+## 2026-10-09 — v0.1.0 Core: defineApi
+
+Implemented `@apixa/core` against the v0.1.0 contract: `defineApi()` with opt-in resource operations, native `Promise<T>` (unwrapped data), Fetch as the default in-Core transport, and injectable `Transport` for tests. Custom operation definitions override convention defaults; unconfigured methods are not generated. Production `mocks` / auth / logging middleware are not part of the public API.
+
+Example (`examples/basic`) and README show the implemented client. Root Vitest suite under `tests/core/` covers definition, overrides, URL building, success, and HTTP/network errors. `pnpm typecheck` and `pnpm test` pass.
+
 ## 2026-10-09 — SETUP THE REPO
 
 Landed the full Apixa workspace on main: living docs, v0.1.0 coding contract, Core and basic example packages, FastAPI backend with platform run/stop/restart scripts, tests placeholder, and Cursor rules/commands/skill for the docs/versions workflow. Core `defineApi` implementation is still ahead under v0.1.0.

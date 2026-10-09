@@ -27,23 +27,55 @@ Apixa aims to reduce this duplication while preserving TypeScript's type safety 
 - **Framework-agnostic:** Keep the core independent of UI frameworks and data-fetching libraries.
 - **Composable:** Allow additional capabilities through optional packages.
 
+## Usage (implemented)
+
+```ts
+import { defineApi } from "@apixa/core";
+
+type User = { id: string; name: string; email: string };
+
+const api = defineApi({
+  baseURL: "https://api.example.com",
+  headers: { Accept: "application/json" },
+  users: {
+    path: "/users",
+    operations: {
+      getAll: { method: "GET", response: {} as User[] },
+      getByID: { method: "GET", path: "/:id", response: {} as User },
+      create: { method: "POST", body: {} as Omit<User, "id">, response: {} as User },
+      update: { method: "PUT", path: "/:id", body: {} as Partial<User>, response: {} as User },
+      delete: { method: "DELETE", path: "/:id", response: undefined as void },
+    },
+  },
+});
+
+const users = await api.users.getAll();
+const user = await api.users.getByID("123");
+const created = await api.users.create({ name: "Ada", email: "ada@example.com" });
+```
+
+Operations return native `Promise<T>` (response data is unwrapped). Only operations listed in the resource config are generated. A custom definition for a convention name (`getByID`, …) overrides the default method/path.
+
+Pass `transport` to inject a custom HTTP implementation (used in tests). The default is Fetch, shipped inside `@apixa/core`.
+
+See [`examples/next`](./examples/next) for the primary real-app playground (Next.js). Other frontends (React/Vite, Vue, vanilla, Angular, React Native) and a Node CLI live under [`examples/`](./examples/). Platform run scripts: [`scripts/README.md`](./scripts/README.md).
+
 ## Vision
 
 Apixa is being designed around a small, extensible core that can grow into a broader API development ecosystem.
 
-Planned capabilities include:
+**Implemented in v0.1.0:** resource definitions via `defineApi()`, opt-in operations, type inference, URL/body/headers, Fetch transport, standardized errors.
 
-- Resource and endpoint definitions.
-- Automatically generated resource methods.
-- Typed request and response handling.
-- Configurable headers, transports, and middleware.
-- Standardized errors and response parsing.
-- Mocking and testing utilities.
+**Planned later** (not in Core yet):
+
+- Middleware as a stable public API, retries, pagination conventions.
+- Mocking package (not coupled to production execution).
 - Optional TanStack Query integration.
-- Browser and server support.
+- Browser and server packages.
 - OpenAPI interoperability.
+- Additional transports extracted from Core.
 
-These are planned capabilities, not a claim that they are all currently implemented.
+These planned items are not currently implemented.
 
 ## Design Philosophy
 
@@ -60,8 +92,10 @@ packages/
   core/             # API definitions and execution (current focus)
 backend/            # FastAPI HTTP server for local/dev checks
 examples/
-  basic/
-tests/              # Automated tests (added during v0.1.0 coding)
+  next/             # Primary frontend playground (Next.js)
+  react-vite/ vue/ vanilla/ angular/ react-native/ basic/
+scripts/            # Backend + frontend run scripts (macOS / Linux / Windows)
+tests/              # Vitest suite for @apixa/core
 docs/               # Living context, architecture, roadmap, ADRs
 versions/
   v0.1.0/           # Active coding contract
@@ -81,9 +115,9 @@ Planned later packages (not created yet): `transport-fetch`, `client`, `server`,
 
 ## Project Status
 
-Apixa is in early development at **v0.1.0**. The public API is being established around `defineApi()` and configurable resource operations. Architecture and feature set may change as Core is validated.
+Apixa is in early development at **v0.1.0**. `@apixa/core` exposes `defineApi()` with opt-in resource operations, Fetch as the default transport, and injectable `Transport` for tests.
 
-See [versions/v0.1.0/acceptance-criteria.md](./versions/v0.1.0/acceptance-criteria.md) for what “done” means for this milestone.
+See [versions/v0.1.0/acceptance-criteria.md](./versions/v0.1.0/acceptance-criteria.md) for the milestone checklist.
 
 ## Author
 

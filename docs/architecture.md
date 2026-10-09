@@ -64,14 +64,14 @@ See also:
 
 | Responsibility | Intended home | Notes on current scaffold |
 | --- | --- | --- |
-| API / resource definition (`defineApi`) | `api.ts` | Today: `createApi` + manual `resource({ endpoints })` |
-| Endpoint / operation helpers | `endpoint.ts` | Today: `get` / `post` / … builders only |
-| Request execution pipeline | `client.ts` | Keep and reshape for generated ops |
-| Fetch transport | `transport/fetch.ts` | Keep in Core for v0.1.0 |
-| Errors | `errors.ts` | Keep hierarchy |
-| Shared types | `types.ts` | Trim public surface for v0.1.0 |
-| URL / serialization helpers | `utils.ts` | Keep |
-| Public exports | `index.ts` | Freeze around `defineApi`, types, errors, Fetch |
+| API / resource definition (`defineApi`) | `api.ts` | `defineApi` + explicit resource `operations` |
+| Endpoint / operation helpers | `endpoint.ts` | Convention defaults, arg parsing, operation callers |
+| Request execution pipeline | `client.ts` | URL/headers/body → transport → unwrapped `Promise<T>` |
+| Fetch transport | `transport/fetch.ts` | Default transport, kept in Core for v0.1.0 |
+| Errors | `errors.ts` | `ApiError` / `HttpError` / `NetworkError` / … |
+| Shared types | `types.ts` | Definition + client inference types |
+| URL / serialization helpers | `utils.ts` | Path join, interpolation, query, JSON body |
+| Public exports | `index.ts` | `defineApi`, types, errors, Fetch / `Transport` |
 
 Out of the v0.1.0 public product surface (may exist in the scaffold today):
 
@@ -86,7 +86,7 @@ Out of the v0.1.0 public product surface (may exist in the scaffold today):
 ```text
 packages/core/
 examples/basic/
-tests/          # tests land during coding
+tests/          # vitest, fake Transport
 ```
 
 **Planned later (do not create yet):**

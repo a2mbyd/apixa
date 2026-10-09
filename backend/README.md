@@ -9,7 +9,7 @@ From the repo root:
 **macOS**
 
 ```bash
-chmod +x scripts/macos/*.sh   # once
+chmod +x scripts/macos/*.sh scripts/lib/*.sh   # once
 ./scripts/macos/run-backend.sh
 ./scripts/macos/stop-backend.sh
 ./scripts/macos/restart-backend.sh
@@ -18,7 +18,7 @@ chmod +x scripts/macos/*.sh   # once
 **Linux**
 
 ```bash
-chmod +x scripts/linux/*.sh   # once
+chmod +x scripts/linux/*.sh scripts/lib/*.sh   # once
 ./scripts/linux/run-backend.sh
 ./scripts/linux/stop-backend.sh
 ./scripts/linux/restart-backend.sh
@@ -31,6 +31,8 @@ scripts\win\run-backend.bat
 scripts\win\stop-backend.bat
 scripts\win\restart-backend.bat
 ```
+
+Frontend example runners (Next, React, Vue, vanilla, Angular, React Native, basic) are documented in [`scripts/README.md`](../scripts/README.md).
 
 Or manually:
 

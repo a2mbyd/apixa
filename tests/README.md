@@ -2,12 +2,23 @@
 
 Root home for Apixa automated tests of `@apixa/core`.
 
-## Intent (v0.1.0)
+## Run
 
-- Prefer a layout such as `tests/core/*.test.ts` once the runner exists.
-- Import `@apixa/core` from the workspace package.
-- Use an injectable / fake `Transport` so the primary suite does not need the network.
-- Optionally hit the real FastAPI app under [`backend/`](../backend/) for manual checks.
+From the repo root:
+
+```bash
+pnpm test
+pnpm typecheck
+```
+
+## Layout
+
+- `tests/core/*.test.ts` — Core behavior (definitions, operations, HTTP success/error).
+- `tests/helpers/` — fake `Transport` used by the suite.
+
+Tests import `@apixa/core` and inject a fake `Transport`. They do not require the network.
+
+Optionally hit the real FastAPI app under [`backend/`](../backend/) for manual checks (`pnpm example` after starting the backend).
 
 See [`versions/v0.1.0/implementation-plan.md`](../versions/v0.1.0/implementation-plan.md).
 
