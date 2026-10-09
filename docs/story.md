@@ -2,6 +2,10 @@
 
 Project log. Newest entry first.
 
+## 2026-10-10 — Core folder-per-concern; untrack examples
+
+Restructured `@apixa/core` internals into folders (`api/`, `operation/`, `request/`, `errors/`, `types/`, `http/`, `transport/`) with short single-purpose modules. Public exports unchanged; only `index.ts` remains at `src/` root. Ignored `examples/**` in git so playgrounds stay local for now.
+
 ## 2026-10-10 — Land v0.1.0 Core and frontend playgrounds
 
 Merged `@apixa/core` `defineApi`, the Vitest suite (fake Transport), Next-first multi-framework examples, and macOS/Linux/Windows frontend run scripts onto main. `/plan-change` now requires a Tests section for functional changes so the suite keeps growing. v0.1.0 acceptance criteria are complete.

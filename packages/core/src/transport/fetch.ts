@@ -1,34 +1,6 @@
-import { AbortError, NetworkError, TimeoutError } from "../errors.js";
-import { isJsonContentType } from "../utils.js";
-import type { Transport, TransportRequest, TransportResponse } from "../types.js";
-
-async function readBody(response: Response): Promise<unknown> {
-  if (response.status === 204 || response.status === 205) {
-    return null;
-  }
-
-  const contentType = response.headers.get("content-type") ?? "";
-
-  if (isJsonContentType(response.headers)) {
-    const text = await response.text();
-    if (!text) return null;
-    return JSON.parse(text) as unknown;
-  }
-
-  if (contentType.startsWith("text/")) {
-    return response.text();
-  }
-
-  // Prefer JSON when no content-type is set but body looks like JSON.
-  const text = await response.text();
-  if (!text) return null;
-
-  try {
-    return JSON.parse(text) as unknown;
-  } catch {
-    return text;
-  }
-}
+import { AbortError, NetworkError, TimeoutError } from "../errors/index.js";
+import type { Transport, TransportRequest, TransportResponse } from "../types/transport.js";
+import { readBody } from "./read-body.js";
 
 export function createFetchTransport(fetchImpl: typeof fetch = fetch): Transport {
   return {
@@ -67,7 +39,7 @@ export function createFetchTransport(fetchImpl: typeof fetch = fetch): Transport
 
         throw new NetworkError(
           error instanceof Error ? error.message : "Network request failed",
-          { cause: error }
+          { cause: error },
         );
       }
 

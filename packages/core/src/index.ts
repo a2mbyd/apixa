@@ -1,4 +1,4 @@
-export { defineApi } from "./api.js";
+export { defineApi } from "./api/index.js";
 
 export {
   ApiError,
@@ -9,9 +9,9 @@ export {
   TimeoutError,
   AbortError,
   isApiError,
-} from "./errors.js";
+} from "./errors/index.js";
 
-export { createFetchTransport } from "./transport/fetch.js";
+export { createFetchTransport } from "./transport/index.js";
 
 export type {
   HttpMethod,
@@ -29,4 +29,4 @@ export type {
   ApiRootConfig,
   ApiClient,
   ResourceClient,
-} from "./types.js";
+} from "./types/index.js";

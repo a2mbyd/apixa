@@ -179,20 +179,17 @@ An initial layout could be:
 
 ```text
 packages/core/src/
-  api.ts
-  endpoint.ts
-  client.ts
-  transport/
-    fetch.ts
-  middleware.ts
-  errors.ts
-  types.ts
   index.ts
+  api/
+  operation/
+  request/
+  errors/
+  types/
+  http/
+  transport/
 ```
 
-This structure is a starting point, not a requirement to create every file immediately.
-
-Each file should represent a genuine responsibility. Avoid speculative abstractions and unnecessary boilerplate.
+Each folder owns one concern; keep modules short. Avoid speculative abstractions and unnecessary boilerplate.
 
 ## 9. Future Roadmap
 
