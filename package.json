@@ -1,0 +1,17 @@
+{
+  "name": "apixa",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Define your API once. Use it everywhere.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "pnpm --filter @apixa/core build",
+    "dev": "pnpm --filter @apixa/core dev",
+    "typecheck": "pnpm --filter @apixa/core typecheck",
+    "example": "pnpm --filter @apixa/example-basic start"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,29 @@
+---
+description: Rules when editing packages/core or examples in Apixa
+globs: packages/**/*,examples/**/*,tests/**/*
+alwaysApply: false
+---
+
+# Core and examples
+
+## Prefer reshape over new packages
+
+Reuse `api.ts`, `endpoint.ts`, `client.ts`, `utils.ts`, `transport/fetch.ts`, `errors.ts`, `types.ts`. Do not add workspace packages without an active version scope item.
+
+## Public API
+
+- Prefer `defineApi` as the documented entry once v0.1.0 lands.
+- Keep `index.ts` exports small: define API, types, errors, Fetch/transport.
+- Unexport or remove production `mocks`, auth product surface, and logging middleware unless the active scope includes them.
+
+## Types and ops
+
+- Infer types from definitions.
+- Generated ops are opt-in / explicitly listed.
+- Custom operation with the same name wins over a convention.
+
+## Examples and tests
+
+- `examples/basic` must match **implemented** API.
+- Tests under root `tests/` (e.g. `tests/core/`); use injectable/fake `Transport`.
+- No flaky live-network as the primary suite.

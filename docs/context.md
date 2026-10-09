@@ -1,0 +1,258 @@
+# Apixa — Project Context and Development Direction
+
+> **Current milestone:** [v0.1.0](../versions/v0.1.0/) — coding contract for the first releaseable Core.
+> This file is the living project context. Version folders freeze a milestone; update this file when direction changes.
+
+## 1. Project Identity
+
+Apixa is an open-source, TypeScript-first library for defining APIs and automatically generating fully typed API clients.
+
+**Tagline:** Define your API once. Use it everywhere.
+
+- Copyright holder: Abdalrahman bani younes
+- GitHub: https://github.com/a2mbyd
+- License: MIT
+- Current stage: Initial development
+- Primary language: TypeScript
+- Package manager: pnpm
+
+Apixa is a library for building API clients. It is not merely a Fetch wrapper, a server-routing framework, or a UI framework.
+
+## 2. The Problem Apixa Solves
+
+Developers repeatedly implement the same API mechanics across resources and projects:
+
+- Request functions for every endpoint.
+- Request and response types.
+- URL and parameter construction.
+- Request body serialization.
+- Shared headers and authentication configuration.
+- Response parsing and validation.
+- Error handling.
+- Common resource operations such as fetching, creating, updating, and deleting records.
+
+Apixa aims to eliminate this repetition through a single API definition.
+
+A developer should define a resource once and receive a predictable, fully typed interface for interacting with it.
+
+## 3. Core Design Principles
+
+1. **Single source of truth:** Define API resources and operations in one place.
+2. **Type inference first:** Infer request arguments, bodies, and response types from definitions.
+3. **Convention-driven:** Generate common resource methods where appropriate.
+4. **Customizable:** Allow developers to override, extend, or disable generated operations.
+5. **Native promises:** Operations return ordinary `Promise<T>` values.
+6. **Framework-agnostic:** Core must not depend on React, Next.js, TanStack Query, or other UI/data-fetching libraries.
+7. **Composable:** Advanced functionality should be introduced without unnecessarily complicating the core.
+8. **Environment-aware:** Server-only secrets must never leak into browser bundles.
+9. **No false assumptions:** A resource definition must not imply that every conventional endpoint exists on the backend.
+
+## 4. Apixa Core
+
+Core is the foundation of the entire ecosystem. It defines APIs, generates resource methods, infers types, and executes requests.
+
+Its initial responsibilities are:
+
+- `defineApi()` — define the API and its resources.
+- Resource and endpoint definitions.
+- Configurable operation generation.
+- Request argument and response type inference.
+- URL, path parameter, and query parameter construction.
+- Request body serialization.
+- Shared configuration and headers.
+- Request execution through a transport interface.
+- Fetch as the initial/default transport where appropriate.
+- Response parsing and standardized errors.
+- A clean, stable public export surface.
+
+Keep the initial core small and cohesive. Do not implement every future feature before validating the core design.
+
+## 5. Intended Developer Experience
+
+The following is illustrative target syntax, not necessarily implemented functionality:
+
+```ts
+const api = defineApi({
+  users: {
+    path: "/users",
+  },
+});
+
+const users = await api.users.getAll();
+const user = await api.users.getByID("123");
+const userBySlug = await api.users.getBySlug("alice");
+const userByEmail = await api.users.getBy("email", "alice@example.com");
+```
+
+Potential generated methods include:
+
+- `getAll()`
+- `get()` as an optional alias for `getAll()`
+- `getByID()`
+- `getByUUID()`
+- `getBySlug()`
+- `getBy(key, value)`
+- `create()`
+- `update()`
+- `delete()`
+
+These are design goals, not fixed API signatures.
+
+Do not blindly assume that every backend implements all these operations. Lookup strategies and HTTP behavior must be configurable, and custom operation definitions must take precedence over conventions.
+
+Prefer clear semantics. For example, `update()` is a clearer default than an ambiguous operation such as `appendUser()`.
+
+## 6. TanStack Query Compatibility
+
+TanStack Query is a future optional integration, not a Core dependency.
+
+Apixa operations must behave naturally as query and mutation functions:
+
+```ts
+useQuery({
+  queryKey: ["users"],
+  queryFn: api.users.getAll,
+});
+
+useMutation({
+  mutationFn: api.users.create,
+});
+```
+
+The exact types depend on the final operation signatures.
+
+Core must not implement its own caching or state-management system just to support TanStack Query.
+
+A future `@apixa/tanstack-query` package may provide:
+
+- Query-key factories.
+- Query-options factories.
+- Mutation helpers.
+- Cache invalidation conveniences.
+- Pagination and infinite-query helpers.
+
+The same architecture should permit future integrations with other data-fetching libraries.
+
+**Dependency direction:** Integrations depend on Core. Core never depends on integrations.
+
+## 7. Intended Workspace Structure
+
+The planned repository structure is:
+
+```text
+packages/
+  core/
+  transport-fetch/
+  client/
+  server/
+  mocking/
+  tanstack-query/
+  openapi/
+
+examples/
+  basic/
+
+README.md
+LICENSE
+package.json
+pnpm-workspace.yaml
+tsconfig.json
+```
+
+The intended responsibilities are:
+
+- `core`: API definitions, type inference, operation generation, and execution.
+- `transport-fetch`: Fetch transport implementation, if separation proves useful.
+- `client`: Browser-specific configuration and behavior.
+- `server`: Server-specific configuration and behavior.
+- `mocking`: Mock handlers, fixtures, and test utilities.
+- `tanstack-query`: Optional TanStack Query integration.
+- `openapi`: OpenAPI interoperability.
+
+These are planned boundaries. Do not prematurely implement every package or introduce unnecessary cross-package dependencies.
+
+Start with Core and establish its public API before building integrations.
+
+## 8. Possible Core Source Structure
+
+An initial layout could be:
+
+```text
+packages/core/src/
+  api.ts
+  endpoint.ts
+  client.ts
+  transport/
+    fetch.ts
+  middleware.ts
+  errors.ts
+  types.ts
+  index.ts
+```
+
+This structure is a starting point, not a requirement to create every file immediately.
+
+Each file should represent a genuine responsibility. Avoid speculative abstractions and unnecessary boilerplate.
+
+## 9. Future Roadmap
+
+### Foundation
+- API and resource definitions.
+- Configurable generated operations.
+- Type inference.
+- Request execution and URL construction.
+- Headers and request customization.
+- Response parsing and standardized errors.
+- Basic example.
+
+### Reliability and developer experience
+- Cancellation and `AbortSignal`.
+- Timeouts and configurable retries.
+- Middleware and interceptors.
+- Optional schema validation.
+- Mocking and contract tests.
+- Pagination, filtering, sorting, and search conventions.
+
+### Environment and integrations
+- Browser and server packages.
+- Secure server-only configuration.
+- TanStack Query integration.
+- Other data-fetching library integrations.
+- File uploads, downloads, and streaming where appropriate.
+
+### Advanced ecosystem
+- OpenAPI import/export.
+- Reusable resource definitions and API versioning.
+- Additional transports.
+- Observability and tracing.
+- CLI tooling and optional code generation.
+- Plugin ecosystem.
+
+This roadmap describes possible future capabilities. Do not implement them all at once.
+
+## 10. Non-Negotiable Constraints
+
+- Do not add React, Next.js, or TanStack Query as Core dependencies.
+- Do not return custom Promise wrappers when ordinary promises can satisfy the requirement.
+- Do not duplicate types unnecessarily.
+- Do not silently invent endpoint behavior.
+- Do not require generated operations when a custom endpoint is more appropriate.
+- Do not couple mocking to production request execution.
+- Do not expose server secrets to browser code.
+- Do not build caching, state management, or framework integrations into Core.
+- Do not add abstractions merely because they may be useful someday.
+- Keep documentation honest about which features are implemented versus planned.
+
+## 11. Immediate Objective
+
+Establish a minimal, scalable Core that proves the main idea:
+
+A developer defines a resource in a few lines, obtains a fully typed client, and executes real HTTP requests without manually implementing every repetitive request function.
+
+The first milestone is a coherent `defineApi()` API, reliable generated operations, explicit customization, native Promise-based execution, and strong TypeScript inference.
+
+Before implementing, inspect the existing repository and its configuration. Preserve working setup, identify what already exists, and propose the smallest implementation plan consistent with this context.
+
+Do not start building future integrations before Core's API design is established.
+
+**Guiding principle: Define the API once. Let Apixa handle repetitive mechanics. Keep application-specific behavior explicit and customizable.**
