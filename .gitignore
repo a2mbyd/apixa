@@ -15,3 +15,6 @@ backend/.venv/
 backend/.backend.pid
 backend/**/__pycache__/
 backend/**/*.pyc
+
+# examples
+examples/**

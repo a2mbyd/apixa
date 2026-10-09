@@ -1,0 +1,47 @@
+import type { HeadersInitLike, HttpMethod } from "./http.js";
+import type { Transport } from "./transport.js";
+
+/** Type marker object for an operation. Values are not read at runtime except `method`, `path`, `headers`, `timeout`, and the presence of `body`. */
+export interface OperationDefinition {
+  method?: HttpMethod;
+  /** Path relative to the resource `path`. Convention names default when omitted. */
+  path?: string;
+  /** Type marker for the JSON request body (`{} as Body`). */
+  body?: unknown;
+  /** Type marker for the unwrapped response payload (`{} as User`). */
+  response?: unknown;
+  /** Type marker for query-string parameters. */
+  query?: unknown;
+  headers?: HeadersInitLike;
+  timeout?: number;
+}
+
+export interface ResourceDefinition {
+  path: string;
+  operations: Record<string, OperationDefinition>;
+}
+
+export type ReservedApiConfigKey = "baseURL" | "headers" | "transport" | "timeout";
+
+export interface ApiRootConfig {
+  baseURL: string;
+  headers?: HeadersInitLike;
+  transport?: Transport;
+  timeout?: number;
+}
+
+export interface ResolvedApiConfig {
+  baseURL: string;
+  headers?: HeadersInitLike;
+  transport: Transport;
+  timeout?: number;
+}
+
+export interface ResolvedOperation {
+  name: string;
+  method: HttpMethod;
+  path: string;
+  hasBody: boolean;
+  headers?: HeadersInitLike;
+  timeout?: number;
+}

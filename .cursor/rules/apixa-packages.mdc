@@ -8,7 +8,7 @@ alwaysApply: false
 
 ## Prefer reshape over new packages
 
-Reuse `api.ts`, `endpoint.ts`, `client.ts`, `utils.ts`, `transport/fetch.ts`, `errors.ts`, `types.ts`. Do not add workspace packages without an active version scope item.
+Reuse folders under `packages/core/src/` (`api/`, `operation/`, `request/`, `http/`, `transport/`, `errors/`, `types/`). Do not add workspace packages without an active version scope item.
 
 ## Public API
 
