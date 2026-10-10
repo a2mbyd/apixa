@@ -12,18 +12,18 @@ Reuse folders under `packages/core/src/` (`api/`, `operation/`, `request/`, `htt
 
 ## Public API
 
-- Prefer `defineApi` as the documented entry once v0.1.0 lands.
+- Prefer `defineApi` as the documented entry; v0.2.0 default-first resources are the active DX.
 - Keep `index.ts` exports small: define API, types, errors, Fetch/transport.
 - Unexport or remove production `mocks`, auth product surface, and logging middleware unless the active scope includes them.
 
 ## Types and ops
 
 - Infer types from definitions.
-- Generated ops are opt-in / explicitly listed.
+- Default-first builtins; optional `operations` merges overrides. Custom names coexist.
 - Custom operation with the same name wins over a convention.
 
 ## Examples and tests
 
-- `examples/basic` must match **implemented** API.
+- Only maintain **`examples/next`** (see `apixa-examples` rule). Do not edit other `examples/*`.
 - Tests under root `tests/` (e.g. `tests/core/`); use injectable/fake `Transport`.
 - No flaky live-network as the primary suite.

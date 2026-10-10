@@ -42,7 +42,7 @@ flowchart TD
 
 1. **Single source of truth** — resources and operations are defined once.
 2. **Type inference first** — argument, body, and response types come from definitions.
-3. **Conventions with overrides** — generate common methods only when configured; custom endpoints win.
+3. **Default-first conventions** — built-in CRUD exists for a resource with `path`; optional `operations` merges overrides; custom/explicit settings win.
 4. **Native promises** — no custom Promise wrappers in Core.
 5. **Framework-agnostic** — Core must not depend on React, Next.js, or TanStack Query.
 6. **Transport-backed** — HTTP runs through a `Transport` interface; Fetch is the default implementation and stays **inside Core** until a package split is justified.
@@ -52,7 +52,7 @@ See also:
 - [001-framework-agnostic-core.md](./decisions/001-framework-agnostic-core.md)
 - [002-transport-abstraction.md](./decisions/002-transport-abstraction.md)
 
-## Request flow (v0.1.0 target)
+## Request flow
 
 1. Caller invokes a resource operation (for example `api.users.getByID("123")`).
 2. Core builds path, query, headers, and body from the definition and call arguments.
