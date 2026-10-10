@@ -5,7 +5,8 @@ export type HttpMethod =
   | "PATCH"
   | "DELETE"
   | "HEAD"
-  | "OPTIONS";
+  | "OPTIONS"
+  
 
 export type PathParams = Record<string, string | number>;
 

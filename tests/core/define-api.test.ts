@@ -5,7 +5,7 @@ import { createFakeTransport } from "../helpers/fake-transport.js";
 type User = { id: string; name: string; email: string };
 
 describe("defineApi", () => {
-  it("exposes only configured operations on a resource client", async () => {
+  it("exposes built-in operations when only a subset is typed in operations", async () => {
     const api = defineApi({
       baseURL: "https://api.example.com",
       transport: createFakeTransport(() => ({
@@ -14,22 +14,24 @@ describe("defineApi", () => {
       users: {
         path: "/users",
         operations: {
-          getAll: { method: "GET", response: {} as User[] },
-          getByID: { method: "GET", path: "/:id", response: {} as User },
-          create: { method: "POST", body: {} as Omit<User, "id">, response: {} as User },
+          getAll: { response: {} as User[] },
+          getByID: { response: {} as User },
+          create: { body: {} as Omit<User, "id">, response: {} as User },
         },
       },
     });
 
-    expect(Object.keys(api.users).sort()).toEqual(["create", "getAll", "getByID"]);
-    expect(api.users).not.toHaveProperty("update");
-    expect(api.users).not.toHaveProperty("delete");
+    expect(Object.keys(api.users).sort()).toEqual([
+      "create",
+      "delete",
+      "getAll",
+      "getByID",
+      "update",
+    ]);
 
-    expectTypeOf(api.users).toHaveProperty("getAll");
-    expectTypeOf(api.users).toHaveProperty("getByID");
-    expectTypeOf(api.users).toHaveProperty("create");
-    expectTypeOf(api.users).not.toHaveProperty("update");
-    expectTypeOf(api.users).not.toHaveProperty("delete");
+    expectTypeOf(api.users).toHaveProperty("update");
+    expectTypeOf(api.users).toHaveProperty("delete");
+    expectTypeOf(api.users.getAll).returns.toEqualTypeOf<Promise<User[]>>();
 
     const users = await api.users.getAll();
     expect(users).toEqual([{ id: "1", name: "Ada", email: "ada@example.com" }]);
@@ -92,11 +94,11 @@ describe("defineApi", () => {
       users: {
         path: "/users",
         operations: {
-          getAll: { method: "GET", response: {} as User[] },
-          getByID: { method: "GET", path: "/:id", response: {} as User },
-          create: { method: "POST", body: {} as Omit<User, "id">, response: {} as User },
-          update: { method: "PUT", path: "/:id", body: {} as Partial<User>, response: {} as User },
-          delete: { method: "DELETE", path: "/:id", response: undefined as void },
+          getAll: { response: {} as User[] },
+          getByID: { response: {} as User },
+          create: { body: {} as Omit<User, "id">, response: {} as User },
+          update: { body: {} as Partial<User>, response: {} as User },
+          delete: { response: undefined as void },
         },
       },
     });

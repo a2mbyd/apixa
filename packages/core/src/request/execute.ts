@@ -7,7 +7,11 @@ import {
   mergeHeaders,
   serializeBody,
 } from "../http/index.js";
-import type { ResolvedApiConfig, ResolvedOperation } from "../types/definition.js";
+import type {
+  ResolvedApiConfig,
+  ResolvedOperation,
+  ResolvedResourceConfig,
+} from "../types/definition.js";
 import type { PathParams, QueryParams } from "../types/http.js";
 import type { ApiResponse, RequestConfig, RequestOptions } from "../types/transport.js";
 
@@ -22,13 +26,19 @@ export interface ExecuteArgs {
 
 export async function executeRequest<TData>(
   api: ResolvedApiConfig,
+  resource: ResolvedResourceConfig,
   operation: ResolvedOperation,
   call: ExecuteArgs = {},
 ): Promise<TData> {
   const path = interpolatePath(operation.path, call.params);
   const url = `${joinURL(api.baseURL, path)}${buildQueryString(call.query)}`;
-  const headers = mergeHeaders(api.headers, operation.headers, call.headers);
-  const timeout = call.timeout ?? operation.timeout ?? api.timeout;
+  const headers = mergeHeaders(
+    api.headers,
+    resource.headers,
+    operation.headers,
+    call.headers,
+  );
+  const timeout = call.timeout ?? operation.timeout ?? resource.timeout ?? api.timeout;
   const { signal, cleanup } = createTimeoutSignal(timeout, call.signal);
 
   const request: RequestConfig = {
