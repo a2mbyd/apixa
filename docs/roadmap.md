@@ -2,24 +2,24 @@
 
 This roadmap describes possible future capabilities. Do not implement them all at once. The active coding contract is always the current version folder under [`versions/`](../versions/).
 
-## Current: v0.1.0 — Foundation
+## Completed: v0.1.0 — Foundation
 
 **Spec:** [versions/v0.1.0/](../versions/v0.1.0/)
 
-Prove the main idea: define a resource, get a fully typed client, execute real HTTP requests.
+Shipped: `defineApi()`, opt-in operations, type inference, Fetch transport, errors, basic example and tests.
 
-- API and resource definitions via `defineApi()`
-- Configurable generated operations (`getAll`, `getByID`, `create`, `update`, `delete`)
-- Custom operations that override conventions
-- Type inference for arguments, bodies, and responses
-- Request execution, URL construction, headers, JSON body
-- Default Fetch transport behind a `Transport` interface
-- Response handling and standardized errors
-- Basic example and root tests
+## Current: v0.2.0 — Default-first resources
 
-## Next: Reliability and developer experience (approx. v0.2.0)
+**Spec:** [versions/v0.2.0/](../versions/v0.2.0/)
 
-When v0.1.0 acceptance criteria are met, create `versions/v0.2.0/` before coding.
+- Path-only resources expose built-in CRUD automatically
+- Optional partial `operations` overrides + custom ops
+- Resource-level headers and merge precedence
+- Updated examples, docs, and tests
+
+## Next: Reliability and developer experience (approx. v0.3.0)
+
+When v0.2.0 acceptance criteria are met, create `versions/v0.3.0/` before coding.
 
 - Cancellation and `AbortSignal` as a first-class, documented surface
 - Timeouts and configurable retries
@@ -28,7 +28,7 @@ When v0.1.0 acceptance criteria are met, create `versions/v0.2.0/` before coding
 - Dedicated mocking package or utilities (not coupled to production execution)
 - Pagination, filtering, sorting, and search conventions
 
-## Later: Environment and integrations (approx. v0.3.0)
+## Later: Environment and integrations (approx. v0.4.0)
 
 - Browser and server packages
 - Secure server-only configuration (secrets must not leak to browser bundles)

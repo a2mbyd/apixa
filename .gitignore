@@ -9,6 +9,7 @@ dist
 coverage
 .turbo
 .vite
+/.vscode
 
 # Python backend local env
 backend/.venv/

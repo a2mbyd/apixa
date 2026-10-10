@@ -29,32 +29,46 @@ Apixa aims to reduce this duplication while preserving TypeScript's type safety 
 
 ## Usage (implemented)
 
+Minimal resource — built-in CRUD is generated from `path`:
+
 ```ts
 import { defineApi } from "@apixa/core";
-
-type User = { id: string; name: string; email: string };
 
 const api = defineApi({
   baseURL: "https://api.example.com",
   headers: { Accept: "application/json" },
   users: {
     path: "/users",
-    operations: {
-      getAll: { method: "GET", response: {} as User[] },
-      getByID: { method: "GET", path: "/:id", response: {} as User },
-      create: { method: "POST", body: {} as Omit<User, "id">, response: {} as User },
-      update: { method: "PUT", path: "/:id", body: {} as Partial<User>, response: {} as User },
-      delete: { method: "DELETE", path: "/:id", response: undefined as void },
-    },
   },
 });
 
-const users = await api.users.getAll();
-const user = await api.users.getByID("123");
-const created = await api.users.create({ name: "Ada", email: "ada@example.com" });
+await api.users.getAll();
+await api.users.getByID("123");
+await api.users.create({ name: "Ada", email: "ada@example.com" });
+await api.users.update("123", { name: "Ada Lovelace" });
+await api.users.delete("123");
 ```
 
-Operations return native `Promise<T>` (response data is unwrapped). Only operations listed in the resource config are generated. A custom definition for a convention name (`getByID`, …) overrides the default method/path.
+Optional type markers and partial overrides:
+
+```ts
+type User = { id: string; name: string; email: string };
+
+const api = defineApi({
+  baseURL: "https://api.example.com",
+  users: {
+    path: "/users",
+    headers: { "X-Client": "dashboard" },
+    operations: {
+      getAll: { path: "/active", response: {} as User[] },
+      update: { method: "PATCH", body: {} as Partial<User>, response: {} as User },
+      create: { body: {} as Omit<User, "id">, response: {} as User },
+    },
+  },
+});
+```
+
+Operations return native `Promise<T>` (response data is unwrapped). Built-ins are `getAll`, `getByID`, `create`, `update`, and `delete`. `operations` is optional and merges onto those defaults; custom operation names coexist with builtins.
 
 Pass `transport` to inject a custom HTTP implementation (used in tests). The default is Fetch, shipped inside `@apixa/core`.
 
@@ -64,11 +78,11 @@ See [`examples/next`](./examples/next) for the primary real-app playground (Next
 
 Apixa is being designed around a small, extensible core that can grow into a broader API development ecosystem.
 
-**Implemented in v0.1.0:** resource definitions via `defineApi()`, opt-in operations, type inference, URL/body/headers, Fetch transport, standardized errors.
+**Implemented:** `defineApi()` with default-first CRUD (v0.2.0), type markers, URL/body/headers merge, Fetch transport, standardized errors.
 
 **Planned later** (not in Core yet):
 
-- Middleware as a stable public API, retries, pagination conventions.
+- Runtime schema validation hooks, middleware, retries, pagination conventions.
 - Mocking package (not coupled to production execution).
 - Optional TanStack Query integration.
 - Browser and server packages.

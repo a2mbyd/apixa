@@ -1,6 +1,7 @@
 # Apixa — Project Context and Development Direction
 
-> **Current milestone:** [v0.1.0](../versions/v0.1.0/) — coding contract for the first releaseable Core.
+> **Current milestone:** [v0.2.0](../versions/v0.2.0/) — default-first resource CRUD on Core.
+> Previous: [v0.1.0](../versions/v0.1.0/) (shipped — opt-in operations foundation).
 > This file is the living project context. Version folders freeze a milestone; update this file when direction changes.
 
 ## 1. Project Identity
@@ -55,7 +56,7 @@ Its initial responsibilities are:
 
 - `defineApi()` — define the API and its resources.
 - Resource and endpoint definitions.
-- Configurable operation generation.
+- Default-first built-in CRUD on resources, with optional partial operation overrides.
 - Request argument and response type inference.
 - URL, path parameter, and query parameter construction.
 - Request body serialization.
@@ -69,10 +70,11 @@ Keep the initial core small and cohesive. Do not implement every future feature 
 
 ## 5. Intended Developer Experience
 
-The following is illustrative target syntax, not necessarily implemented functionality:
+**Implemented direction (v0.2.0 contract):** a resource with `path` gets built-in CRUD; configure only differences.
 
 ```ts
 const api = defineApi({
+  baseURL: "https://api.example.com",
   users: {
     path: "/users",
   },
@@ -80,25 +82,11 @@ const api = defineApi({
 
 const users = await api.users.getAll();
 const user = await api.users.getByID("123");
-const userBySlug = await api.users.getBySlug("alice");
-const userByEmail = await api.users.getBy("email", "alice@example.com");
 ```
 
-Potential generated methods include:
+Built-in operations: `getAll`, `getByID`, `create`, `update`, `delete` (positional args). Optional `operations` merges overrides and custom endpoints; custom/explicit settings win over defaults.
 
-- `getAll()`
-- `get()` as an optional alias for `getAll()`
-- `getByID()`
-- `getByUUID()`
-- `getBySlug()`
-- `getBy(key, value)`
-- `create()`
-- `update()`
-- `delete()`
-
-These are design goals, not fixed API signatures.
-
-Do not blindly assume that every backend implements all these operations. Lookup strategies and HTTP behavior must be configurable, and custom operation definitions must take precedence over conventions.
+**Planned later (not v0.2.0):** `getBySlug`, `getByUUID`, `getBy(key, value)`, runtime schema validation hooks.
 
 Prefer clear semantics. For example, `update()` is a clearer default than an ambiguous operation such as `appendUser()`.
 

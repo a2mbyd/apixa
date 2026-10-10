@@ -2,6 +2,10 @@
 
 Project log. Newest entry first.
 
+## 2026-10-10 — Land v0.2.0 contract and living docs
+
+Froze [`versions/v0.2.0/`](../versions/v0.2.0/) as the active coding contract and marked v0.1.0 completed. Living docs, README, and Cursor rules now describe default-first resource CRUD to match Core already on main. Acceptance criteria for v0.2.0 are checked off.
+
 ## 2026-10-10 — Resource client builtins complete in TypeScript
 
 `ResourceClient` now declares required `getAll` / `getByID` / `create` / `update` / `delete` keys so IDEs complete `api.users.…` without `Awaited<ReturnType<…>>`. Empty or missing `operations` still yields the same surface at runtime via `expandOperations`. Next example (local) uses path-only `users` without `ReturnType` gymnastics.
