@@ -2,6 +2,16 @@ import type { HeadersInitLike, HttpMethod, PathParams, QueryParams } from "./htt
 import type { RequestOptions } from "./transport.js";
 import type { ReservedApiConfigKey } from "./definition.js";
 
+export type BuiltinOpName = "getAll" | "getByID" | "create" | "update" | "delete";
+
+type BuiltinOpDefs = {
+  getAll: { path: "" };
+  getByID: { path: "/:id" };
+  create: { path: ""; body: unknown };
+  update: { path: "/:id"; body: unknown };
+  delete: { path: "/:id" };
+};
+
 type DefaultPath<Name extends string> = Name extends "getByID" | "update" | "delete"
   ? "/:id"
   : "";
@@ -71,15 +81,52 @@ type BuildOperationFn<
       ? (id: string | number, body: Body, options?: RequestOptions<Query>) => Promise<Result>
       : (params: Params, body: Body, options?: RequestOptions<Query>) => Promise<Result>;
 
-export type ResourceClient<Ops> = {
-  [K in keyof Ops]: OperationFn<Extract<K, string>, Ops[K]>;
+/** Ensure create/update keep a body argument when overrides omit a `body` marker. */
+type WithBuiltinBody<Name, Op> = Name extends "create" | "update"
+  ? "body" extends keyof Op
+    ? Op
+    : Op & { body: unknown }
+  : Op;
+
+type EffectiveOpDef<Name extends BuiltinOpName, Ops> = Name extends keyof Ops
+  ? WithBuiltinBody<Name, Ops[Name]>
+  : BuiltinOpDefs[Name];
+
+/** Normalize missing / empty `operations` to `{}` for merging. */
+export type ResourceOpsOf<R> = R extends { operations: infer Ops }
+  ? [keyof Ops & string] extends [never]
+    ? {}
+    : Ops extends Record<string, unknown>
+      ? Ops
+      : {}
+  : {};
+
+/** Builtins ∪ declared operations; overrides refine individual ops. */
+export type EffectiveOps<Ops> = {
+  [K in BuiltinOpName]: EffectiveOpDef<K, Ops>;
+} & {
+  [K in Exclude<keyof Ops, BuiltinOpName>]: Ops[K];
+};
+
+/**
+ * Resource client with **required** builtin method keys so IDEs complete
+ * `api.users.getAll` / `getByID` / … without ReturnType hacks.
+ */
+export type ResourceClient<Ops = {}> = {
+  getAll: OperationFn<"getAll", EffectiveOpDef<"getAll", Ops>>;
+  getByID: OperationFn<"getByID", EffectiveOpDef<"getByID", Ops>>;
+  create: OperationFn<"create", EffectiveOpDef<"create", Ops>>;
+  update: OperationFn<"update", EffectiveOpDef<"update", Ops>>;
+  delete: OperationFn<"delete", EffectiveOpDef<"delete", Ops>>;
+} & {
+  [K in Exclude<keyof Ops, BuiltinOpName>]: OperationFn<Extract<K, string>, Ops[K]>;
 };
 
 export type ApiClient<T> = {
   [K in keyof T as K extends ReservedApiConfigKey ? never : K]: T[K] extends {
-    operations: infer Ops;
+    path: string;
   }
-    ? ResourceClient<Ops>
+    ? ResourceClient<ResourceOpsOf<T[K]>>
     : never;
 };
 
@@ -95,7 +142,9 @@ type ValidOperationValue = {
 
 type ValidResourceValue = {
   path: string;
-  operations: Record<string, ValidOperationValue>;
+  headers?: HeadersInitLike;
+  timeout?: number;
+  operations?: Record<string, ValidOperationValue>;
 };
 
 /** Structural check that preserves inferred operation types on `defineApi` input. */

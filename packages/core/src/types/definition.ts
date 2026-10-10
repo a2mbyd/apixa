@@ -18,7 +18,10 @@ export interface OperationDefinition {
 
 export interface ResourceDefinition {
   path: string;
-  operations: Record<string, OperationDefinition>;
+  /** Optional. When omitted, built-in CRUD operations are generated. When present, merges onto builtins. */
+  operations?: Record<string, OperationDefinition>;
+  headers?: HeadersInitLike;
+  timeout?: number;
 }
 
 export type ReservedApiConfigKey = "baseURL" | "headers" | "transport" | "timeout";
@@ -34,6 +37,11 @@ export interface ResolvedApiConfig {
   baseURL: string;
   headers?: HeadersInitLike;
   transport: Transport;
+  timeout?: number;
+}
+
+export interface ResolvedResourceConfig {
+  headers?: HeadersInitLike;
   timeout?: number;
 }
 

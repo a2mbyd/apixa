@@ -2,6 +2,10 @@
 
 Project log. Newest entry first.
 
+## 2026-10-10 — Resource client builtins complete in TypeScript
+
+`ResourceClient` now declares required `getAll` / `getByID` / `create` / `update` / `delete` keys so IDEs complete `api.users.…` without `Awaited<ReturnType<…>>`. Empty or missing `operations` still yields the same surface at runtime via `expandOperations`. Next example (local) uses path-only `users` without `ReturnType` gymnastics.
+
 ## 2026-10-10 — Core folder-per-concern; untrack examples
 
 Restructured `@apixa/core` internals into folders (`api/`, `operation/`, `request/`, `errors/`, `types/`, `http/`, `transport/`) with short single-purpose modules. Public exports unchanged; only `index.ts` remains at `src/` root. Ignored `examples/**` in git so playgrounds stay local for now.

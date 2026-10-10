@@ -2,6 +2,8 @@ import { joinPath } from "../http/path.js";
 import type { OperationDefinition, ResolvedOperation } from "../types/definition.js";
 import { CONVENTION_DEFAULTS } from "./conventions.js";
 
+const BODY_CONVENTIONS = new Set(["create", "update"]);
+
 export function resolveOperation(
   name: string,
   resourcePath: string,
@@ -17,12 +19,15 @@ export function resolveOperation(
   }
 
   const relativePath = definition.path ?? defaults?.path ?? "";
+  const hasBody =
+    Object.prototype.hasOwnProperty.call(definition, "body") ||
+    (BODY_CONVENTIONS.has(name) && defaults !== undefined);
 
   return {
     name,
     method,
     path: joinPath(resourcePath, relativePath),
-    hasBody: Object.prototype.hasOwnProperty.call(definition, "body"),
+    hasBody,
     headers: definition.headers,
     timeout: definition.timeout,
   };

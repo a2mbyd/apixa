@@ -20,11 +20,15 @@ export type {
   ReservedApiConfigKey,
   ApiRootConfig,
   ResolvedApiConfig,
+  ResolvedResourceConfig,
   ResolvedOperation,
 } from "./definition.js";
 
 export type {
+  BuiltinOpName,
   EffectivePath,
+  EffectiveOps,
+  ResourceOpsOf,
   ResourceClient,
   ApiClient,
   ValidateApiConfig,
