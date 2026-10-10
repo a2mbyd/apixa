@@ -8,7 +8,7 @@ This roadmap describes possible future capabilities. Do not implement them all a
 
 Shipped: `defineApi()`, opt-in operations, type inference, Fetch transport, errors, basic example and tests.
 
-## Current: v0.2.0 — Default-first resources
+## Completed: v0.2.0 — Default-first resources
 
 **Spec:** [versions/v0.2.0/](../versions/v0.2.0/)
 
@@ -17,9 +17,18 @@ Shipped: `defineApi()`, opt-in operations, type inference, Fetch transport, erro
 - Resource-level headers and merge precedence
 - Updated examples, docs, and tests
 
-## Next: Reliability and developer experience (approx. v0.3.0)
+## Current: v0.3.0 — Resource typing
 
-When v0.2.0 acceptance criteria are met, create `versions/v0.3.0/` before coding.
+**Spec:** [versions/v0.3.0/](../versions/v0.3.0/)
+
+When starting work, implement against that folder’s acceptance criteria.
+
+- Branded marker helper `type<T>()` / `Type<T>` / `Infer<M>`
+- Per-operation `body` / `response` markers without user-facing `as` casts
+- Breaking change from `{} as T` documented in changelog
+- Follow-ups documented: `crud<>()` preset, path-param template inference (not in this milestone)
+
+## Next: Reliability and developer experience (approx. v0.4.0)
 
 - Cancellation and `AbortSignal` as a first-class, documented surface
 - Timeouts and configurable retries
@@ -28,7 +37,7 @@ When v0.2.0 acceptance criteria are met, create `versions/v0.3.0/` before coding
 - Dedicated mocking package or utilities (not coupled to production execution)
 - Pagination, filtering, sorting, and search conventions
 
-## Later: Environment and integrations (approx. v0.4.0)
+## Later: Environment and integrations (approx. v0.5.0)
 
 - Browser and server packages
 - Secure server-only configuration (secrets must not leak to browser bundles)

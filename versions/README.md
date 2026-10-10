@@ -22,14 +22,15 @@ Each folder under `versions/` freezes the coding contract for one milestone.
 
 | Version | Status | Path |
 | --- | --- | --- |
-| **v0.2.0** | Active — coding contract | [v0.2.0/](./v0.2.0/) |
+| **v0.3.0** | Active — coding contract | [v0.3.0/](./v0.3.0/) |
 
 ## Completed
 
 | Version | Status | Path |
 | --- | --- | --- |
+| v0.2.0 | Shipped — default-first resource CRUD | [v0.2.0/](./v0.2.0/) |
 | v0.1.0 | Shipped — opt-in operations foundation | [v0.1.0/](./v0.1.0/) |
 
 ## Later (roadmap only)
 
-v0.3.0 and v1.0.0 are outlined in the roadmap. Create their folders when each milestone starts—not before.
+v0.4.0 and v1.0.0 are outlined in the roadmap. Create their folders when each milestone starts—not before.

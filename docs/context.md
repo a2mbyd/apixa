@@ -1,7 +1,7 @@
 # Apixa — Project Context and Development Direction
 
-> **Current milestone:** [v0.2.0](../versions/v0.2.0/) — default-first resource CRUD on Core.
-> Previous: [v0.1.0](../versions/v0.1.0/) (shipped — opt-in operations foundation).
+> **Current milestone:** [v0.3.0](../versions/v0.3.0/) — resource typing via `type<T>()`.
+> Previous: [v0.2.0](../versions/v0.2.0/) (shipped — default-first resource CRUD); [v0.1.0](../versions/v0.1.0/) (shipped — opt-in foundation).
 > This file is the living project context. Version folders freeze a milestone; update this file when direction changes.
 
 ## 1. Project Identity
